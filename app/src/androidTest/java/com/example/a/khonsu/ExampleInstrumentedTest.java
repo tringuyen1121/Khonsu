@@ -1,4 +1,4 @@
-package com.example.a.vinpal;
+package com.example.a.khonsu;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
