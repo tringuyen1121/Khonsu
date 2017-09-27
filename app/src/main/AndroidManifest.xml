@@ -16,8 +16,11 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.example.a.khonsu.SensorService.action.STEP_UPDATE" />
+                <action android:name="com.example.a.knonsu.SensorService.action.DIRECTION_UPDATE" />
             </intent-filter>
         </activity>
+        <service android:name=".SensorService"/>
     </application>
 
 </manifest>
