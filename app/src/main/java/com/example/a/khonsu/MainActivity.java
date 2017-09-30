@@ -7,9 +7,7 @@ import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -17,7 +15,7 @@ public class MainActivity extends AppCompatActivity{
     /*
     Text View references
      */
-    private Button startBtn;
+    private ImageView startBtn;
     private ImageView mMap;
 
     private boolean serviceNotRunning = true;
@@ -32,7 +30,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startBtn = (Button)findViewById(R.id.service_button);
+        startBtn = (ImageView) findViewById(R.id.service_button);
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
