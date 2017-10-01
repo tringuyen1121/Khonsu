@@ -133,7 +133,6 @@ public class SensorService extends Service implements SensorEventListener {
     private void calculateOrientation() {
         // If phone doesn't have Rotation Vector sensor, calculate orientation based on Accelerometer and Magnetometer
         if (SensorManager.getRotationMatrix(mAccMagMatrix, null, mAccel, mMagnet) && !hasRotationSensor) {
-            Log.d("AccMagMatrix", Arrays.toString(mAccMagMatrix));
             SensorManager.getOrientation(mAccMagMatrix, mOrientation);
         } else {
             SensorManager.getRotationMatrixFromVector(mRotationMatrixFromVector, mRotation);
