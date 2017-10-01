@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Khonsu</string>
+
+    <string name="logo_description">App logo</string>
 </resources>

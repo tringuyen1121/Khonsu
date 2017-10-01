@@ -8,10 +8,4 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Khonsu" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/teal500</item>
-        <item name="colorPrimaryDark">@color/teal700</item>
-        <item name="colorAccent">@color/teal300</item>
-    </style>
-
 </resources>

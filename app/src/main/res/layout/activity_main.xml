@@ -6,88 +6,12 @@
     android:layout_height="match_parent"
     tools:context="com.example.a.khonsu.MainActivity">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/toolbar"
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/teal300"
-        android:contentInsetLeft="0dp"
-        android:contentInsetStart="0dp">
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_container">
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/ic_menu" />
-
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="50dp"
-            android:background="@drawable/ic_location" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/imageView2"
-            android:layout_marginLeft="10dp"
-            android:text="3rd Floor"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
-
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/ic_search" />
-    </android.support.v7.widget.Toolbar>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/service_button"
-        android:text="Start"
-        android:layout_below="@+id/toolbar"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="18dp" />
-
-    <com.example.a.khonsu.Util.ZoomLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/zoom_layout"
-        android:layout_below="@+id/service_button"
-        android:layout_above="@+id/coordinates">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:layout_alignParentStart="true"
-                android:id="@+id/imageView" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imagePin" />
-
-        </RelativeLayout>
-    </com.example.a.khonsu.Util.ZoomLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/coordinates"
-        android:text="djghodsg"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+    </FrameLayout>
 
 </RelativeLayout>
