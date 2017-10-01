@@ -47,25 +47,38 @@
             android:background="@drawable/ic_search" />
     </android.support.v7.widget.Toolbar>
 
-    <ImageView
-        android:id="@+id/service_button"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="right"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/ic_mylocation" />
-
-    <ImageView
-        android:id="@+id/imageView"
+    <com.example.a.khonsu.Util.ZoomLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/toolbar"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
+        android:id="@+id/zoom_layout"
+        android:layout_below="@+id/service_button"
+        android:layout_above="@+id/coordinates">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:layout_alignParentStart="true"
+                android:id="@+id/imageView" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imagePin" />
+
+        </RelativeLayout>
+    </com.example.a.khonsu.Util.ZoomLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/coordinates"
+        android:text="djghodsg"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>
