@@ -10,7 +10,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.a.khonsu.Util.ZoomLayout;
 import java.util.Arrays;
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     Text View references
      */
-    private ImageView startBtn;
+    private Button startBtn;
     private ImageView mMap;
     private ImageView mPin;
     private TextView coordinatesText;
@@ -88,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
         mPin = (ImageView) findViewById(R.id.imagePin);
 
-        mARHandler = ARHandler.class;
     }
 
     @Override
