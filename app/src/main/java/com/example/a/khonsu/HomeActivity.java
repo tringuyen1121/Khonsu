@@ -5,18 +5,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.a.khonsu.Util.ZoomLayout;
 
-public class HomeActivity extends FragmentActivity{
+public class HomeActivity extends Fragment {
 
     /*
    Text View references
@@ -43,21 +47,24 @@ public class HomeActivity extends FragmentActivity{
     private Class mARHandler = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_home);
 
-        mLocProvider = new LocationProvider(this);
 
-        coordinatesText = (TextView) findViewById(R.id.coordinates);
+    }
 
-        startBtn = (Button) findViewById(R.id.service_button);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+        coordinatesText = v.findViewById(R.id.coordinates);
+
+        startBtn = v.findViewById(R.id.service_button);
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                final Intent intent = new Intent(HomeActivity.this, mARHandler);
-                startActivity(intent);
 //                if(mLocProvider.isConnected) {
 //                    coordinates = mLocProvider.getCoordinates();
 //                }
@@ -75,34 +82,36 @@ public class HomeActivity extends FragmentActivity{
             }
         });
 
-        final ZoomLayout zoomlayout = (ZoomLayout) findViewById(R.id.zoom_layout);
+        final ZoomLayout zoomlayout = v.findViewById(R.id.zoom_layout);
         zoomlayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                zoomlayout.init(HomeActivity.this);
+                zoomlayout.init(getContext());
                 return false;
             }
         });
 
-        mMap = (ImageView) findViewById(R.id.imageView);
+        mMap = v.findViewById(R.id.imageView);
         mMap.setImageResource(R.drawable.ic_thirdfloor);
 
-        mPin = (ImageView) findViewById(R.id.imagePin);
+        mPin = (ImageView)v.findViewById(R.id.imagePin);
 
+
+        return v;
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if (mSensorReceiverDirection != null || mSensorReceiverStep != null) {
             try {
-                unregisterReceiver(mSensorReceiverDirection);
-                unregisterReceiver(mSensorReceiverStep);
+                getActivity().unregisterReceiver(mSensorReceiverDirection);
+                getActivity().unregisterReceiver(mSensorReceiverStep);
                 mSensorReceiverDirection = null;
                 mSensorReceiverStep = null;
             } catch (Exception e) {
@@ -114,7 +123,7 @@ public class HomeActivity extends FragmentActivity{
 
     private void startService() {
         if (serviceNotRunning) {
-            startService(new Intent(HomeActivity.this, SensorService.class));
+            getActivity().startService(new Intent(getActivity(), SensorService.class));
             serviceNotRunning = false;
 
             regsiterBroadCastReceivers();
@@ -127,21 +136,21 @@ public class HomeActivity extends FragmentActivity{
     private void regsiterBroadCastReceivers() {
         IntentFilter directionFilter = new IntentFilter(SensorService.DIRECT_UPDATE);
         mSensorReceiverDirection = new SensorServiceReceiver();
-        registerReceiver(mSensorReceiverDirection, directionFilter);
+        getActivity().registerReceiver(mSensorReceiverDirection, directionFilter);
         IntentFilter stepsFilter = new IntentFilter(SensorService.STEP_UPDATE);
         mSensorReceiverStep = new SensorServiceReceiver();
-        registerReceiver(mSensorReceiverStep, stepsFilter);
+        getActivity().registerReceiver(mSensorReceiverStep, stepsFilter);
     }
 
     @Override
     public void onStart() {
-        mLocProvider.connectService();
+        //mLocProvider.connectService();
         super.onStart();
     }
 
     @Override
     public void onStop() {
-        mLocProvider.disconnectService();
+        //mLocProvider.disconnectService();
         super.onStop();
     }
 
@@ -166,7 +175,7 @@ public class HomeActivity extends FragmentActivity{
 
     private double getScreenDistance(double x1, double y1, double x2, double y2) {
         DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
         double xDist = Math.pow(Math.abs(x1 - x2) / dm.xdpi, 2);
         double yDist = Math.pow(Math.abs(y1 - y2) / dm.ydpi, 2);
         return Math.sqrt(xDist + yDist);

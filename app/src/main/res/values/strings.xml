@@ -2,4 +2,6 @@
     <string name="app_name">Khonsu</string>
 
     <string name="logo_description">App logo</string>
+
+    <string name="runtime_permissions_txt">"Application need your permission to access its features."</string>
 </resources>

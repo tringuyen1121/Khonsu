@@ -27,12 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.a.khonsu.HomeActivity">
-            <intent-filter>
-                <action android:name="com.example.a.khonsu.SensorService.action.STEP_UPDATE" />
-                <action android:name="com.example.a.knonsu.SensorService.action.DIRECTION_UPDATE" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name="com.example.a.khonsu.ARHandler"
