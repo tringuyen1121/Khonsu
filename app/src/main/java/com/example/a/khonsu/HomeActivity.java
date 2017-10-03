@@ -1,9 +1,12 @@
 package com.example.a.khonsu;
 
+import android.*;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -45,13 +48,13 @@ public class HomeActivity extends Fragment {
         setHasOptionsMenu(true);
 
         cameraBtn = v.findViewById(R.id.camera_button);
-        //scale the button
-        DisplayMetrics dm = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int button_size = (int)(dm.widthPixels * 0.3);
-        cameraBtn.getLayoutParams().width = button_size;
-        cameraBtn.getLayoutParams().height = button_size;
-        cameraBtn.requestLayout();
+        setUpCameraBtn();
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).requestCameraPermission();
+            }
+        });
 
         locationEditText = v.findViewById(R.id.location_editText);
         locationEditText.setOnKeyListener(new View.OnKeyListener() {
@@ -74,5 +77,15 @@ public class HomeActivity extends Fragment {
     private void setUpToolbar() {
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
        if (actionBar != null) actionBar.setDisplayShowTitleEnabled(false);
+    }
+
+    private void setUpCameraBtn() {
+        //scale the button
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int button_size = (int)(dm.widthPixels * 0.3);
+        cameraBtn.getLayoutParams().width = button_size;
+        cameraBtn.getLayoutParams().height = button_size;
+        cameraBtn.requestLayout();
     }
 }

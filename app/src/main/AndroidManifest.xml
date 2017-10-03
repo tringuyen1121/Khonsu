@@ -29,7 +29,11 @@
         </activity>
 
         <activity
-            android:name="com.example.a.khonsu.ARHandler"
+            android:name="com.example.a.khonsu.ARFinderActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="fullSensor"/>
+        <activity
+            android:name="com.example.a.khonsu.MapNavActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="fullSensor"/>
         <service android:name=".SensorService"/>

@@ -1,6 +1,7 @@
 package com.example.a.khonsu;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -12,7 +13,8 @@ import com.example.a.khonsu.Util.RuntimePermissions;
 
 public class MainActivity extends RuntimePermissions implements Launching.LaunchingListener {
 
-    private static final int REQUEST_PERMISSIONS = 20;
+    private static final int LOCATION_REQUEST_PERMISSIONS = 101;
+    private static final int CAMERA_REQUEST_PERMISSIONS = 102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,15 @@ public class MainActivity extends RuntimePermissions implements Launching.Launch
 
     @Override
     public void onPermissionsGranted(int requestCode) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeActivity()).commit();
+        switch (requestCode) {
+            case LOCATION_REQUEST_PERMISSIONS:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeActivity()).commit();
+                break;
+            case CAMERA_REQUEST_PERMISSIONS:
+                Intent intent = new Intent(this, ARFinderActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 
     @Override
@@ -35,9 +45,21 @@ public class MainActivity extends RuntimePermissions implements Launching.Launch
                 != PackageManager.PERMISSION_GRANTED) {
             MainActivity.super.requestAppPermissions(new
                             String[]{Manifest.permission.ACCESS_FINE_LOCATION}, R.string.runtime_permissions_txt
-                    , REQUEST_PERMISSIONS);
+                    , LOCATION_REQUEST_PERMISSIONS);
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeActivity()).commit();
+        }
+    }
+
+    public void requestCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            MainActivity.super.requestAppPermissions(new
+                            String[]{Manifest.permission.CAMERA}, R.string.runtime_permissions_txt
+                    , CAMERA_REQUEST_PERMISSIONS);
+        } else {
+            Intent intent = new Intent(this, ARFinderActivity.class);
+            startActivity(intent);
         }
     }
 }

@@ -1,15 +1,22 @@
 <resources>
     <string name="app_name">Khonsu</string>
-    <string name="home">Home</string>
-    <string name="information_icon">Info</string>
 
+    <string name="runtime_permissions_txt">"Application need your permission to access its features."</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!-- LAUNCHING ACTIVITY -->
     <string name="logo_description">App logo</string>
+
+
+    <!-- HOME ACTIVITY -->
+    <string name="home">Home</string>
+    <string name="information_icon">Info</string>
     <string name="enter_location_hint">Enter your current location, i.e room number</string>
     <string name="location_submit_btn">Enter</string>
     <string name="guide_text">Scan a sticker or enter your location to start</string>
-    <string name="runtime_permissions_txt">"Application need your permission to access its features."</string>
     <string name="camera_btn_description">Button to trigger Camera</string>
+
+    <!--AR RECOGNITION ACTIVITY -->
+    <string name="finder_searching">Scanning...</string>
 </resources>
