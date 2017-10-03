@@ -44,7 +44,7 @@ public class SecondActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search, menu);
+        getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
 

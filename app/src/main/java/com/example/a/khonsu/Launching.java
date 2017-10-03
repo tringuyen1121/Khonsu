@@ -33,7 +33,6 @@ public class Launching extends Fragment implements SetOnDeviceCollectionListener
 
     private ImageView logo;
     private Animation zoomIn, zoomOut;
-    private ActionBar actionBar;
 
     private LaunchingListener mListener;
 
@@ -94,13 +93,12 @@ public class Launching extends Fragment implements SetOnDeviceCollectionListener
 
     @Override
     public void syncProgress(CraftAROnDeviceCollection collection, float progress) {
-        Log.e(TAG, "Sync progress for collection "+ collection.getName() + ":"+ progress);
+        Log.i(TAG, "Sync progress for collection "+ collection.getName() + ":"+ progress);
     }
 
     @Override
     public void syncFailed(CraftAROnDeviceCollection collection, CraftARError error) {
         String text = "Sync failed for collection "+ collection.getName();
-        Toast.makeText(getContext(), text , Toast.LENGTH_SHORT).show();
         Log.e(TAG, text + ":" + error.getErrorMessage());
         loadCollection(collection);
     }
@@ -159,19 +157,12 @@ public class Launching extends Fragment implements SetOnDeviceCollectionListener
             //Collection is already available in the device.
             col.sync(this);
         }
-
-        actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_launching, container, false);
-
-        //hide action bar of launching scene
-        if (( actionBar != null)) {
-            actionBar.hide();
-        }
 
         logo = v.findViewById(R.id.logo);
         initAnimation();
@@ -193,7 +184,6 @@ public class Launching extends Fragment implements SetOnDeviceCollectionListener
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
         int screen_width = dm.widthPixels;
         logo.getLayoutParams().width = (int) (0.5 * screen_width); //scale up logo to 50% width
-        Log.v("Welcome", String.valueOf(logo.getLayoutParams().width));
         logo.requestLayout();
     }
 

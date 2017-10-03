@@ -1,55 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.a.khonsu.MainActivity"
-    tools:showIn="@layout/app_bar_main">
-
+    tools:showIn="@layout/fragment_home_bar"
+    android:background="@color/colorPrimary">
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/service_button"
-        android:text="Start"
-        android:layout_marginTop="55dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <com.example.a.khonsu.Util.ZoomLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/zoom_layout"
-        android:layout_below="@+id/service_button"
-        android:layout_above="@+id/coordinates">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:layout_alignParentStart="true"
-                android:id="@+id/imageView" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imagePin" />
-
-        </RelativeLayout>
-    </com.example.a.khonsu.Util.ZoomLayout>
+        android:background="@drawable/ic_photo_camera"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/camera_button"
+        android:elevation="2dp"
+        android:stateListAnimator="@anim/button_elevation"/>
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/coordinates"
-        android:text="djghodsg"
-        android:layout_alignParentBottom="true"
+        android:textColor="@color/white"
+        android:text="@string/guide_text"
+        android:textSize="30sp"
+        android:id="@+id/guide_text"
+        android:textAlignment="center"
+        android:layout_marginBottom="84dp"
+        android:layout_above="@+id/camera_button"
         android:layout_alignParentStart="true" />
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/camera_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_location_hint"
+            android:id="@+id/location_editText"
+            android:background="@drawable/rounded_edittext"
+            android:textSize="12sp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:inputType="text"
+            android:maxLines="1"
+            android:imeOptions="actionDone" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/location_submit_btn"
+            android:background="@color/lBlue300"
+            android:layout_margin="10dp"
+            android:id="@+id/location_submit_btn"/>
+
+    </LinearLayout>
 </RelativeLayout>

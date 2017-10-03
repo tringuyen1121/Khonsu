@@ -3,8 +3,9 @@
     <color name="colorPrimary">#EF5350</color>
     <color name="colorPrimaryDark">#E53935</color>
     <color name="colorAccent">#2196F3</color>
-    <color name="blue400">#2196F3</color>
-    <color name="blue700">#1976D2</color>
+    <color name="lBlue300">#4FC3F7</color>
+    <color name="lBlue500">#03A9F4</color>
+    <color name="lBlue700">#0288D1</color>
     <color name="white">#FFFFFF</color>
     <color name="grey100">#CFD8DC</color>
     <color name="blueGrey700">#455A64</color>
