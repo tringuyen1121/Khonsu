@@ -1,10 +1,9 @@
-package com.example.a.khonsu.controller;
+package com.example.a.khonsu.view;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -130,7 +129,6 @@ public class LaunchingFragment extends Fragment implements SetOnDeviceCollection
     /**
      * Set up the Views and other methods
      */
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

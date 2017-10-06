@@ -1,4 +1,4 @@
-package com.example.a.khonsu.controller;
+package com.example.a.khonsu.view;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

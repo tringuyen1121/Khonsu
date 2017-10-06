@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.example.a.khonsu.controller.MainActivity"
+            android:name="com.example.a.khonsu.view.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,11 +31,11 @@
         </activity>
 
         <activity
-            android:name="com.example.a.khonsu.controller.ARFinderActivity"
+            android:name="com.example.a.khonsu.view.ARFinderActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="com.example.a.khonsu.controller.MapNavActivity"
+            android:name="com.example.a.khonsu.view.MapNavActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"/>
         <service android:name=".SensorService"/>

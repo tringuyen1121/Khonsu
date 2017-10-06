@@ -16,7 +16,8 @@
     <string name="location_submit_btn">Enter</string>
     <string name="guide_text">Scan a sticker or enter your location to start</string>
     <string name="camera_btn_description">Button to trigger Camera</string>
+    <string name="updated_database">UPDATED_DATABASE</string>
 
     <!--AR RECOGNITION ACTIVITY -->
-    <string name="finder_searching">Scanning...</string>
+    <string name="finder_searching">Scanning…</string>
 </resources>

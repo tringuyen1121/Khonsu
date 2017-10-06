@@ -5,12 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Location {
 
-    public enum LocationType {
-        ENTRY,
-        EXIT,
+    enum LOCATION_TYPE {
+        CLASSROOM,
         ELEVATOR,
         STAIRCASE,
-        CLASSROOM,
         OTHER
     }
 
@@ -32,6 +30,12 @@ public class Location {
     @SerializedName("locationY")
     @Expose
     private Double locationY;
+    @SerializedName("coordinateX")
+    @Expose
+    private Double coordinateX;
+    @SerializedName("coordinateY")
+    @Expose
+    private Double coordinateY;
     @SerializedName("floor_id")
     @Expose
     private Integer floorId;
@@ -82,6 +86,22 @@ public class Location {
 
     public void setLocationY(Double locationY) {
         this.locationY = locationY;
+    }
+
+    public Double getCoordinateX() {
+        return coordinateX;
+    }
+
+    public void setCoordinateX(Double coordinateX) {
+        this.coordinateX = coordinateX;
+    }
+
+    public Double getCoordinateY() {
+        return coordinateY;
+    }
+
+    public void setCoordinateY(Double coordinateY) {
+        this.coordinateY = coordinateY;
     }
 
     public Integer getFloorId() {
