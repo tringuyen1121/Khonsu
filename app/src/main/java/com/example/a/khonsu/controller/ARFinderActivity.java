@@ -1,4 +1,4 @@
-package com.example.a.khonsu;
+package com.example.a.khonsu.controller;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,6 +14,7 @@ import com.craftar.CraftAROnDeviceIR;
 import com.craftar.CraftARResult;
 import com.craftar.CraftARSDK;
 import com.craftar.CraftARSearchResponseHandler;
+import com.example.a.khonsu.R;
 
 import java.util.ArrayList;
 
@@ -94,7 +95,7 @@ public class ARFinderActivity extends CraftARActivity implements CraftARSearchRe
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("No objects found");
-        dialogBuilder.setMessage("Point to an object of the " + Launching.COLLECTION_TOKEN + " collection");
+        dialogBuilder.setMessage("Point to an object of the " + LaunchingFragment.COLLECTION_TOKEN + " collection");
         dialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 startFinding();
@@ -119,7 +120,7 @@ public class ARFinderActivity extends CraftARActivity implements CraftARSearchRe
         Intent intent = new Intent(this, MapNavActivity.class);
         intent.putExtra("UUID", resultsText);
         startActivity(intent);
-
+        finish();
     }
 
     private void showResultDialog(ArrayList<CraftARResult> results){

@@ -1,4 +1,4 @@
-package com.example.a.khonsu.Util;
+package com.example.a.khonsu.util;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;

@@ -1,9 +1,10 @@
-package com.example.a.khonsu;
+package com.example.a.khonsu.controller;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -22,11 +23,12 @@ import com.craftar.CraftAROnDeviceCollectionManager;
 import com.craftar.CraftAROnDeviceIR;
 import com.craftar.CraftARSDK;
 import com.craftar.SetOnDeviceCollectionListener;
+import com.example.a.khonsu.R;
 
 import java.util.List;
 
 
-public class Launching extends Fragment implements SetOnDeviceCollectionListener,
+public class LaunchingFragment extends Fragment implements SetOnDeviceCollectionListener,
         CraftAROnDeviceCollectionManager.AddCollectionListener, CraftAROnDeviceCollectionManager.SyncCollectionListener {
 
     final private String TAG = getClass().getSimpleName();
@@ -139,6 +141,11 @@ public class Launching extends Fragment implements SetOnDeviceCollectionListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+
         CraftARSDK.Instance().init(getActivity().getApplicationContext());
         //Initialize the Collection Manager
         mCollectionManager = CraftAROnDeviceCollectionManager.Instance();
@@ -177,7 +184,7 @@ public class Launching extends Fragment implements SetOnDeviceCollectionListener
         super.onStart();
     }
 
-    public Launching() {}
+    public LaunchingFragment() {}
 
     private void scaleLogo() {
         DisplayMetrics dm = new DisplayMetrics();

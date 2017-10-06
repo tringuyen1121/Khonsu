@@ -4,8 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.a.khonsu.MainActivity"
-    tools:showIn="@layout/fragment_home_bar"
+    tools:context="com.example.a.khonsu.controller.MainActivity"
     android:background="@color/colorPrimary">
 
     <Button
@@ -21,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:text="@string/guide_text"
         android:textSize="30sp"
         android:id="@+id/guide_text"
@@ -61,6 +60,7 @@
             android:text="@string/location_submit_btn"
             android:background="@color/lBlue300"
             android:layout_margin="10dp"
+            android:textColor="@android:color/white"
             android:id="@+id/location_submit_btn"/>
 
     </LinearLayout>

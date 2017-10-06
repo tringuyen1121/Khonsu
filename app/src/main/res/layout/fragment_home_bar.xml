@@ -14,20 +14,17 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary">
+            android:background="?attr/colorPrimary"
+            android:titleTextAppearance="@style/Toolbar.TitleText">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 android:text="@string/home"
                 android:id="@+id/toolbar_title"
                 android:textSize="27sp"/>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
-
-
-    <include layout="@layout/fragment_home" />
-
 
 </android.support.design.widget.CoordinatorLayout>

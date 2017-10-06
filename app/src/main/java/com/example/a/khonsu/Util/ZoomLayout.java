@@ -1,7 +1,6 @@
-package com.example.a.khonsu.Util;
+package com.example.a.khonsu.util;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -97,7 +96,7 @@ public class ZoomLayout extends RelativeLayout implements ScaleGestureDetector.O
                     dy = Math.min(Math.max(dy, -maxDy), maxDy);
                     Log.i(TAG, "Width: " + child().getWidth() + ", scale " + scale + ", dx " + dx
                             + ", max " + maxDx);
-                    applyScaleAndTranslation();
+                    applyScaleAndTranslation(mPivotX, mPivotY, scale);
                 }else if (mode == Mode.DRAG && scale > MIN_ZOOM) {
                     Log.i(TAG, "Draggin");
                     child().setTranslationX(dx);
@@ -140,14 +139,26 @@ public class ZoomLayout extends RelativeLayout implements ScaleGestureDetector.O
         Log.i(TAG, "onScaleEnd");
     }
 
-    private void applyScaleAndTranslation() {
-        child().setPivotX(mPivotX);
-        child().setPivotY(mPivotY);
+    public void applyScaleAndTranslation(float pivotX, float pivotY, float scale) {
+        child().setPivotX(pivotX);
+        child().setPivotY(pivotY);
         child().setScaleX(scale);
         child().setScaleY(scale);
     }
 
     private View child() {
         return getChildAt(0);
+    }
+
+    public void setPivotX(float pivotX) {
+        mPivotX = pivotX;
+    }
+
+    public void setPivotY(float pivotY) {
+        mPivotY = pivotY;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 }

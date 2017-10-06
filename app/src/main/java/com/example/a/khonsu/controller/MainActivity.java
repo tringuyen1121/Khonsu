@@ -1,17 +1,16 @@
-package com.example.a.khonsu;
+package com.example.a.khonsu.controller;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 
-import com.example.a.khonsu.Util.RuntimePermissions;
+import com.example.a.khonsu.R;
+import com.example.a.khonsu.util.RuntimePermissions;
 
 
-public class MainActivity extends RuntimePermissions implements Launching.LaunchingListener {
+public class MainActivity extends RuntimePermissions implements LaunchingFragment.LaunchingListener {
 
     private static final int LOCATION_REQUEST_PERMISSIONS = 101;
     private static final int CAMERA_REQUEST_PERMISSIONS = 102;
@@ -21,7 +20,7 @@ public class MainActivity extends RuntimePermissions implements Launching.Launch
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Launching launchingFragment = new Launching();
+        LaunchingFragment launchingFragment = new LaunchingFragment();
 
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, launchingFragment).commit();
     }
@@ -30,7 +29,7 @@ public class MainActivity extends RuntimePermissions implements Launching.Launch
     public void onPermissionsGranted(int requestCode) {
         switch (requestCode) {
             case LOCATION_REQUEST_PERMISSIONS:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeActivity()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
                 break;
             case CAMERA_REQUEST_PERMISSIONS:
                 Intent intent = new Intent(this, ARFinderActivity.class);
@@ -47,7 +46,7 @@ public class MainActivity extends RuntimePermissions implements Launching.Launch
                             String[]{Manifest.permission.ACCESS_FINE_LOCATION}, R.string.runtime_permissions_txt
                     , LOCATION_REQUEST_PERMISSIONS);
         } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeActivity()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
         }
     }
 

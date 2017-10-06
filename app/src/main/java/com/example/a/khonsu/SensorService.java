@@ -52,7 +52,7 @@ public class SensorService extends Service implements SensorEventListener {
     private boolean hasRotationSensor = true;
     private int mStep = 0;
     private int currentAngle = 0;
-    private int prevAngle = 0;
+    private double prevAngle = 0;
     private boolean isWalking = false;
 
 
@@ -122,7 +122,7 @@ public class SensorService extends Service implements SensorEventListener {
                 if (event.values[0] == 1.0) {
                     isWalking = true;
                     mStep++;
-                    announceChange(STEP_UPDATE);
+                    //announceChange(STEP_UPDATE);
                 } else {
                     isWalking = false;
                 }
@@ -141,27 +141,40 @@ public class SensorService extends Service implements SensorEventListener {
 
         // Calculate azimuth to detect direction
         double azimuth = Math.toDegrees(mOrientation[0]);
-        currentAngle = (int)azimuth;
-        if((prevAngle - currentAngle) > 45){
-            Log.v("<-", "Turning LEFT");
-            announceChange(DIRECT_UPDATE);
-            prevAngle = currentAngle;
-        } else if ((prevAngle - currentAngle) < -45) {
-            Log.v("->", "Turning RIGHT");
-            announceChange(DIRECT_UPDATE);
-            prevAngle = currentAngle;
+        //currentAngle = (int)azimuth;
+
+        System.out.println(azimuth);
+
+        //TEMPORARY:
+        if(Math.abs(azimuth - prevAngle) >= 1.0) {
+            prevAngle = azimuth;
+            Intent intent = new Intent("Azimuth");
+            intent.putExtra("Azimuth", azimuth);
+            sendBroadcast(intent);
         }
+
+
+
+//        if((prevAngle - currentAngle) > 45){
+//            Log.v("<-", "Turning LEFT");
+//            announceChange(DIRECT_UPDATE);
+//            prevAngle = currentAngle;
+//        } else if ((prevAngle - currentAngle) < -45) {
+//            Log.v("->", "Turning RIGHT");
+//            announceChange(DIRECT_UPDATE);
+//            prevAngle = currentAngle;
+//        }
     }
 
-    private void announceChange(String type) {
-        if (type.equals(STEP_UPDATE)) {
-            Intent intent = new Intent(STEP_UPDATE);
-            intent.putExtra(STEPS, mStep);
-            sendBroadcast(intent);
-        } else {
-            Intent intent = new Intent(DIRECT_UPDATE);
-            intent.putExtra(ANGLE, currentAngle);
-            sendBroadcast(intent);
-        }
-    }
+//    private void announceChange(String type) {
+//        if (type.equals(STEP_UPDATE)) {
+//            Intent intent = new Intent(STEP_UPDATE);
+//            intent.putExtra(STEPS, mStep);
+//            sendBroadcast(intent);
+//        } else {
+//            Intent intent = new Intent(DIRECT_UPDATE);
+//            intent.putExtra(ANGLE, currentAngle);
+//            sendBroadcast(intent);
+//        }
+//    }
 }

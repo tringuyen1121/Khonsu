@@ -1,15 +1,11 @@
-package com.example.a.khonsu;
+package com.example.a.khonsu.controller;
 
-import android.*;
-import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -17,15 +13,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-public class HomeActivity extends Fragment {
+import com.example.a.khonsu.R;
+
+public class HomeFragment extends Fragment {
 
     Button cameraBtn;
     Button locationBtn;
@@ -34,16 +27,18 @@ public class HomeActivity extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.show();
+            actionBar.setTitle(R.string.home);
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_home_bar, container, false);
-
-        Toolbar toolbar = v.findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        setUpToolbar();
+        View v = inflater.inflate(R.layout.fragment_home, container, false);
 
         setHasOptionsMenu(true);
 
@@ -52,6 +47,7 @@ public class HomeActivity extends Fragment {
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                cameraBtn.setEnabled(false); //prevent users accidentally hit the button twice
                 ((MainActivity)getActivity()).requestCameraPermission();
             }
         });
@@ -64,19 +60,32 @@ public class HomeActivity extends Fragment {
             }
         });
 
+        locationBtn = v.findViewById(R.id.location_submit_btn);
+        locationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (locationEditText.getText() != null) {
+                    String searchTerm = locationEditText.getText().toString().trim().toLowerCase();
+                    Intent intent = new Intent(getActivity(), MapNavActivity.class);
+                    intent.putExtra("UUID", searchTerm);
+                    startActivity(intent);
+                }
+            }
+        });
+
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        cameraBtn.setEnabled(true);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_home, menu);
         super.onCreateOptionsMenu(menu,inflater);
-    }
-
-
-    private void setUpToolbar() {
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-       if (actionBar != null) actionBar.setDisplayShowTitleEnabled(false);
     }
 
     private void setUpCameraBtn() {

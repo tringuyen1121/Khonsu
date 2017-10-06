@@ -1,4 +1,4 @@
-package com.example.a.khonsu.Util.Filter;
+package com.example.a.khonsu.util.filter;
 
 public class LowPassFilter {
 

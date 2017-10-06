@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/logo"
         android:src="@drawable/ic_logo_refine"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:adjustViewBounds="true"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
