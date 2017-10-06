@@ -198,7 +198,7 @@ public class MapNavActivity extends AppCompatActivity {
             if (intent.getAction().equals(SensorService.STEP_UPDATE)) {
                 stepCounter = intent.getIntExtra(SensorService.STEPS, 0);
             } else if (intent.getAction().equals(SensorService.DIRECT_UPDATE)) {
-                //angle = intent.getIntExtra(SensorService.ANGLE, 0);
+                //ngle = intent.getIntExtra(SensorService.ANGLE, 0);
             } else if (intent.getAction().equals("Azimuth")) {
                 Log.i("Map", "Receive broadcast");
                 azimuth = intent.getDoubleExtra("Azimuth", 0);
