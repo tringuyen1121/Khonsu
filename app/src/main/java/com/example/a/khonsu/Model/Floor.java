@@ -3,7 +3,9 @@ package com.example.a.khonsu.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Floor {
+import java.io.Serializable;
+
+public class Floor implements Serializable{
 
     @SerializedName("floor_id")
     @Expose
@@ -14,6 +16,12 @@ public class Floor {
     @SerializedName("map_path")
     @Expose
     private String mapPath;
+
+    public Floor(int id, String name, String path) {
+        this.floorId = id;
+        this.floorName = name;
+        this.mapPath = path;
+    }
 
     public Integer getFloorId() {
         return floorId;

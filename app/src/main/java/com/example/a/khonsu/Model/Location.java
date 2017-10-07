@@ -3,12 +3,16 @@ package com.example.a.khonsu.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Location {
+import java.io.Serializable;
 
-    enum LOCATION_TYPE {
+public class Location implements Serializable {
+
+    public enum LOCATION_TYPE{
         CLASSROOM,
         ELEVATOR,
         STAIRCASE,
+        EXIT,
+        ENTRY,
         OTHER
     }
 
@@ -21,6 +25,7 @@ public class Location {
     @SerializedName("location_type")
     @Expose
     private String locationType;
+    private LOCATION_TYPE locType;
     @SerializedName("sticker_uuid")
     @Expose
     private String stickerUuid;
@@ -39,6 +44,18 @@ public class Location {
     @SerializedName("floor_id")
     @Expose
     private Integer floorId;
+
+    public Location (int id, String name, LOCATION_TYPE type, String uuid, Double locX, Double locY, Double coorX, Double coorY, int floorId) {
+        this.locationId = id;
+        this.loactionName = name;
+        this.locType = type;
+        this.stickerUuid = uuid;
+        this.locationX = locX;
+        this.locationY = locY;
+        this.coordinateX = coorX;
+        this.coordinateY = coorY;
+        this.floorId = floorId;
+    }
 
     public Integer getLocationId() {
         return locationId;

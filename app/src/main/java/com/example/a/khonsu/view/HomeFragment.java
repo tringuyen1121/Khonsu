@@ -1,7 +1,9 @@
 package com.example.a.khonsu.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -37,9 +39,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment  {
 
-    private  Button cameraBtn;
+    private Button cameraBtn;
     private Button locationBtn;
     private EditText locationEditText;
 
@@ -47,9 +49,11 @@ public class HomeFragment extends Fragment {
     private DatabaseOpenHelper dbHelper;
     private SharedPreferences sharedPref;
 
-    private  List<Location> locList = new ArrayList<>();
+    private List<Location> locList = new ArrayList<>();
     private List<Route> routeList = new ArrayList<>();
     private List<Floor> floorList = new ArrayList<>();
+
+    public static String START_LOCATION = "S_LOCATION";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +64,7 @@ public class HomeFragment extends Fragment {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         //fetch data from online JSON if it is not updated
-        if(sharedPref.getBoolean(getString(R.string.updated_database), false)) {
+        if(!sharedPref.getBoolean(getString(R.string.updated_database), false)) {
             getDataFromJSON();
         }
 
@@ -102,9 +106,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 if (locationEditText.getText() != null) {
                     String searchTerm = locationEditText.getText().toString().trim().toLowerCase();
-                    Intent intent = new Intent(getActivity(), MapNavActivity.class);
-                    intent.putExtra("UUID", searchTerm);
-                    startActivity(intent);
+                    LoadLocation task = new LoadLocation(getContext());
+                    task.execute(searchTerm);
                 }
             }
         });
@@ -169,10 +172,7 @@ public class HomeFragment extends Fragment {
         @Override
         public void run() {
 
-            for (Location loc: locList) {
-                dbHelper.insertLocation(loc);
-                Log.i("Home", "Saving Loc");
-            }
+            for (Location loc: locList) dbHelper.insertLocation(loc);
             for (Floor floor: floorList) dbHelper.insertFloor(floor);
             for (Route route: routeList) {
                 List<Path> pathList = route.getPaths();
@@ -184,12 +184,35 @@ public class HomeFragment extends Fragment {
                     dbHelper.insertRoutePath(route.getRouteId(), path.getPathId());
                 }
             }
-
-
-
+            Log.i("Home", "Save Complete");
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(getString(R.string.updated_database), true);
             editor.apply();
+        }
+    }
+
+    private class LoadLocation extends AsyncTask<String, Void, Location> {
+
+        private Context context;
+
+        public LoadLocation(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Location doInBackground(String... strings) {
+            return dbHelper.getStartLocation(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Location location) {
+            if (location == null) {
+                Toast.makeText(getContext(), "Location is not found", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(context, MapNavActivity.class);
+                intent.putExtra(START_LOCATION, location);
+                startActivity(intent);
+            }
         }
     }
 }

@@ -2,48 +2,85 @@ package com.example.a.khonsu.view;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
+import com.example.a.khonsu.DatabaseOpenHelper;
 import com.example.a.khonsu.R;
 import com.example.a.khonsu.SensorService;
+import com.example.a.khonsu.model.Floor;
+import com.example.a.khonsu.model.Location;
 import com.example.a.khonsu.util.ZoomLayout;
+
+import java.util.List;
 
 public class MapNavActivity extends AppCompatActivity {
 
     private ImageView mPin, mMap;
     private int mapWidth, mapHeight, pinWidth, pinHeight = 0;
-    private String uuid;
     private double azimuth;
     public double currentAngle;
     public double preAngle;
 
     private boolean serviceNotRunning = true;
     private SensorServiceReceiver mSensorReceiverDirection, mSensorReceiverStep, mSensorReceiverAngle;
+    private DatabaseOpenHelper dbHelper;
 
     public int stepCounter;
 
     private ZoomLayout mapLayout;
+    private Location startLoc;
+    private Floor startfloor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        Intent intent = getIntent();
-        uuid = intent.getExtras().getString("UUID");
+        dbHelper = new DatabaseOpenHelper(this);
 
         mMap = (ImageView)findViewById(R.id.map);
+        mPin = (ImageView)findViewById(R.id.imagePin);
+        mapLayout = (ZoomLayout) findViewById(R.id.map_layout);
+
+        Intent intent = getIntent();
+        startLoc = (Location) intent.getSerializableExtra(HomeFragment.START_LOCATION);
+
+        startfloor = dbHelper.getFloor(startLoc.getFloorId());
+        if (startfloor == null) {
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle("Error");
+            alertDialog.setMessage("Error in fetching floor map. Try to update database again.");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+            finish();
+        } else {
+            int id = getResources().getIdentifier(startfloor.getMapPath(), "drawable", getPackageName());
+            Drawable map = getResources().getDrawable(id, null);
+            mMap.setBackground(map);
+        }
+
         mMap.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -54,7 +91,6 @@ public class MapNavActivity extends AppCompatActivity {
             }
         });
 
-        mPin = (ImageView)findViewById(R.id.imagePin);
         mPin.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -65,13 +101,11 @@ public class MapNavActivity extends AppCompatActivity {
             }
         });
 
-        mapLayout = (ZoomLayout) findViewById(R.id.map_layout);
-
         Button startBtn = (Button)findViewById(R.id.start_tracking_button);
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                displayPossibleDestination();
             }
         });
 
@@ -83,15 +117,44 @@ public class MapNavActivity extends AppCompatActivity {
     }
 
     private void displayLocation() {
-        double[] coordinates = fetchData(uuid);
         if ( mapWidth != 0 && mapHeight != 0 && pinWidth != 0 && pinHeight != 0) {
-            mPin.setX((float)Math.abs(pinWidth/2-(coordinates[0]*mapWidth)));
-            mPin.setY((float)Math.abs(pinHeight/2-(coordinates[1]*mapHeight)));
-            mPin.setPivotX((float)(coordinates[0]*mapWidth));
-            mPin.setPivotY((float)(coordinates[1]*mapHeight));
+            mPin.setX((float)Math.abs(pinWidth/2-(startLoc.getLocationX()*mapWidth)));
+            mPin.setY((float)Math.abs(pinHeight/2-(startLoc.getLocationY()*mapHeight)));
+            mPin.setPivotX((float)(startLoc.getLocationX()*mapWidth));
+            mPin.setPivotY((float)(startLoc.getLocationY()*mapHeight));
             mPin.requestLayout();
 
             setUpZoom();
+        }
+    }
+
+    private void displayPossibleDestination() {
+        List<Location> destinations = dbHelper.getAllLocation();
+        RelativeLayout la = (RelativeLayout)findViewById(R.id.map_layout_child);
+        for (final Location loc: destinations) {
+            if (loc.getLocationId().intValue() != startLoc.getLocationId().intValue()) {
+                final ImageView desPin = new ImageView(this);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.pin_size), ViewGroup.LayoutParams.WRAP_CONTENT);
+                desPin.setImageResource(R.drawable.ic_app_icon);
+                desPin.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                desPin.setAdjustViewBounds(true);
+                desPin.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                la.addView(desPin, params);
+
+                desPin.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        desPin.setX((float) Math.abs(desPin.getWidth() / 2 - (loc.getLocationX() * mapWidth)));
+                        desPin.setY((float) Math.abs(desPin.getHeight() - (loc.getLocationY() * mapHeight)));
+                        desPin.requestLayout();
+                    }
+                });
+            }
         }
     }
 
@@ -113,29 +176,7 @@ public class MapNavActivity extends AppCompatActivity {
             @Override
             public void onAnimationRepeat(Animation animation) {}
         });
-        //sa.setFillAfter(true);
         mapLayout.startAnimation(sa);
-    }
-
-    private double[] fetchData(String location) {
-        double[] result = new double[2];
-        switch (location) {
-            case "66e9a4c00a5240138e9eb747540738ea":
-            case "b302":
-                result[0] = 0.8028;
-                result[1] = 0.1119;
-                break;
-            case "e44e432dffa1401d8da43550940e95de":
-            case "b327":
-                result[0] = 0.8028;
-                result[1] = 0.7308;
-                break;
-            default:
-                result[0] = 0;
-                result[1] = 0;
-                break;
-        }
-        return result;
     }
 
     private void startService() {
@@ -170,12 +211,6 @@ public class MapNavActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop() {
-        //mLocProvider.disconnectService();
-        super.onStop();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mSensorReceiverDirection != null || mSensorReceiverStep != null) {
@@ -189,6 +224,7 @@ public class MapNavActivity extends AppCompatActivity {
                 mSensorReceiverStep = null;
             }
         }
+        serviceNotRunning = true;
     }
 
     private class SensorServiceReceiver extends BroadcastReceiver {

@@ -1,8 +1,10 @@
 package com.example.a.khonsu.view;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +16,9 @@ import com.craftar.CraftAROnDeviceIR;
 import com.craftar.CraftARResult;
 import com.craftar.CraftARSDK;
 import com.craftar.CraftARSearchResponseHandler;
+import com.example.a.khonsu.DatabaseOpenHelper;
 import com.example.a.khonsu.R;
+import com.example.a.khonsu.model.Location;
 
 import java.util.ArrayList;
 
@@ -29,10 +33,13 @@ public class ARFinderActivity extends CraftARActivity implements CraftARSearchRe
     private final static long FINDER_SESSION_TIME_MILLIS= 10000;
     boolean mIsActivityRunning = false;
 
+    private DatabaseOpenHelper dbHelper;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dbHelper = new DatabaseOpenHelper(this);
     }
 
     @Override
@@ -117,37 +124,10 @@ public class ARFinderActivity extends CraftARActivity implements CraftARSearchRe
         }
         resultsText = resultsText.substring(0,resultsText.length() - 1); //Eliminate the last \n
 
-        Intent intent = new Intent(this, MapNavActivity.class);
-        intent.putExtra("UUID", resultsText);
-        startActivity(intent);
+        LoadLocation task = new LoadLocation(this);
+        task.execute(resultsText);
         finish();
     }
-
-    private void showResultDialog(ArrayList<CraftARResult> results){
-        if(!mIsActivityRunning){
-            return;
-        }
-
-        String resultsText="";
-        for(CraftARResult result:results){
-            String itemName = result.getItem().getItemName();
-            resultsText+= itemName + "\n";
-        }
-        resultsText = resultsText.substring(0,resultsText.length() - 1); //Eliminate the last \n
-
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Search results:");
-        dialogBuilder.setMessage(resultsText);
-        dialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                startFinding();
-            }
-        });
-
-        dialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
-        dialogBuilder.show();
-    }
-
 
     private void startFinding(){
         mScanningLayout.setVisibility(View.VISIBLE);
@@ -182,5 +162,30 @@ public class ARFinderActivity extends CraftARActivity implements CraftARSearchRe
     protected void onStart(){
         super.onStart();
         mIsActivityRunning = true;
+    }
+
+    private class LoadLocation extends AsyncTask<String, Void, Location> {
+
+        private Context context;
+
+        public LoadLocation(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Location doInBackground(String... strings) {
+            return dbHelper.getStartLocation(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Location location) {
+            if (location == null) {
+                Toast.makeText(getApplicationContext(), "Location is not found", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(context, MapNavActivity.class);
+                intent.putExtra(HomeFragment.START_LOCATION, location);
+                startActivity(intent);
+            }
+        }
     }
 }

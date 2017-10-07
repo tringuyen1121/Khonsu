@@ -31,6 +31,7 @@ public class Constants {
         public static final String PATH_END_X = "endX";
         public static final String PATH_START_Y = "startY";
         public static final String PATH_END_Y = "endY";
+        public static final String PATH_DIRECTION = "direction";
 
         // TABLE ROUTE
         public static final String ROUTE_TABLE_NAME = "routes";
@@ -70,6 +71,7 @@ public class Constants {
                 PATH_END_X + " REAL NOT null, " +
                 PATH_START_Y + " REAL NOT null, " +
                 PATH_END_Y + " REAL NOT null," +
+                PATH_DIRECTION + " TEXT NOT null, " +
                 "UNIQUE(" + PATH_START_X + "," + PATH_END_X + "," + PATH_START_Y + "," + PATH_END_Y + ") ON CONFLICT IGNORE)";
 
         public static final String CREATE_ROUTE_TABLE = "CREATE TABLE " + ROUTE_TABLE_NAME + " (" +

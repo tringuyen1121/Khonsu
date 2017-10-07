@@ -15,12 +15,21 @@ public class Route {
     @SerializedName("start_locationId")
     @Expose
     private Integer startLocationId;
+    private Location startLocation;
     @SerializedName("end_locationId")
     @Expose
     private Integer endLocationId;
+    private Location endLocation;
     @SerializedName("paths")
     @Expose
     private List<Path> paths = null;
+
+    public Route(int id, int floorId, Location start, Location end) {
+        this.routeId = id;
+        this.floorId = floorId;
+        this.startLocation = start;
+        this.endLocation = end;
+    }
 
     public Integer getRouteId() {
         return routeId;
