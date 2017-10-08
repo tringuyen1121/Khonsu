@@ -10,7 +10,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/map_layout_child">
+            android:id="@+id/map_layout_child"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -23,7 +25,11 @@
                 android:layout_height="10dp"
                 android:src="@drawable/ic_navigation"
                 android:id="@+id/imagePin"
-                android:contentDescription="@string/pin_description"/>
+                android:contentDescription="@string/pin_description"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:clipChildren="false"
+                android:clipToPadding="false"/>
         </RelativeLayout>
 
     </com.example.a.khonsu.util.ZoomLayout>

@@ -99,15 +99,15 @@ public class SensorService extends Service implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ROTATION_VECTOR:
-                LowPassFilter.lowPass(event.values.clone(), mRotation);
+                System.arraycopy(event.values, 0, mRotation, 0, 3);
                 calculateOrientation();
                 break;
             case Sensor.TYPE_ACCELEROMETER:
-                LowPassFilter.lowPass(event.values.clone(), mAccel);
+                mAccel = LowPassFilter.lowPass(event.values.clone(), mAccel);
                 calculateOrientation();
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
-                LowPassFilter.lowPass(event.values.clone(), mMagnet);
+                mMagnet = LowPassFilter.lowPass(event.values.clone(), mMagnet);
                 break;
             case Sensor.TYPE_STEP_DETECTOR:
                 mStep = event.values[0] == 1.0;
