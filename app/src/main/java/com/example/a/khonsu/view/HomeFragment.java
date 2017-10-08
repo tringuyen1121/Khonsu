@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,6 +32,7 @@ import com.example.a.khonsu.model.Path;
 import com.example.a.khonsu.model.Route;
 import com.example.a.khonsu.model.ServerObject;
 import com.example.a.khonsu.util.ApiUtils;
+import com.example.a.khonsu.util.CustomDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +126,13 @@ public class HomeFragment extends Fragment  {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_home, menu);
         super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        CustomDialog dialog = new CustomDialog(getContext(), getString(R.string.dialog_title), getString(R.string.home_dialog_message));
+        dialog.show();
+        return true;
     }
 
     private void setUpCameraBtn() {

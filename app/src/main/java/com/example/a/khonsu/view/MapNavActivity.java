@@ -1,5 +1,6 @@
 package com.example.a.khonsu.view;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,12 +13,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.a.khonsu.DatabaseOpenHelper;
 import com.example.a.khonsu.R;
@@ -26,6 +31,7 @@ import com.example.a.khonsu.model.Floor;
 import com.example.a.khonsu.model.Location;
 import com.example.a.khonsu.model.Path;
 import com.example.a.khonsu.model.Route;
+import com.example.a.khonsu.util.CustomDialog;
 import com.example.a.khonsu.util.ZoomLayout;
 
 import java.util.Arrays;
@@ -86,6 +92,10 @@ public class MapNavActivity extends AppCompatActivity {
             int id = getResources().getIdentifier(startFloor.getMapPath(), "drawable", getPackageName());
             Drawable map = getResources().getDrawable(id, null);
             mMap.setBackground(map);
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(startFloor.getFloorName());
+            }
         }
 
         mMap.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -120,9 +130,12 @@ public class MapNavActivity extends AppCompatActivity {
 
         startService();
         if (!SensorService.sensorAvailable) {
+            Toast.makeText(this, R.string.sensor_not_detected, Toast.LENGTH_SHORT).show();
             //terminate the app if sensors are not available
             System.exit(1);
         }
+
+        showInstructDialog();
     }
 
     private void displayLocation() {
@@ -210,7 +223,6 @@ public class MapNavActivity extends AppCompatActivity {
 
     @Override
     public void onStart() {
-        //mLocProvider.connectService();
         super.onStart();
     }
 
@@ -226,5 +238,23 @@ public class MapNavActivity extends AppCompatActivity {
             }
         }
         serviceNotRunning = true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        showInstructDialog();
+        return true;
+    }
+
+    private void showInstructDialog() {
+        // custom dialog
+        CustomDialog dialog = new CustomDialog(this, getString(R.string.dialog_title), getString(R.string.map_dialog_message));
+        dialog.show();
     }
 }

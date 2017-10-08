@@ -1,13 +1,9 @@
 <resources>
     <string name="app_name">Khonsu</string>
-
     <string name="runtime_permissions_txt">"Application need your permission to access its features."</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- LAUNCHING ACTIVITY -->
     <string name="logo_description">App logo</string>
-
 
     <!-- HOME ACTIVITY -->
     <string name="home">Home</string>
@@ -25,5 +21,18 @@
     <string name="pin_description">Navigator</string>
     <string name="map_description">Floor map</string>
     <string name="show_button">Show</string>
+    <string name="sensor_not_detected">No sensor available</string>
 
+    <!-- CUSTOM DIALOG -->
+    <string name="info_icon">Info Icon</string>
+    <string name="map_dialog_message">
+        1. Always keep your phone parallel to the ground \n
+        2. Click "Show" button to show possible destinations \n
+        3. Choose one of destination to start tracking
+    </string>
+        <string name="home_dialog_message">
+        Scan or enter your current location. If you enter your location manually, make sure you are at the entrance, i.e the door.
+    </string>
+    <string name="dialog_button">OK</string>
+    <string name="dialog_title">How to use?</string>
 </resources>
