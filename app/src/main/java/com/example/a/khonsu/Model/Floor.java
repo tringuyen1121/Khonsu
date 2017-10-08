@@ -23,28 +23,11 @@ public class Floor implements Serializable{
         this.mapPath = path;
     }
 
-    public Integer getFloorId() {
-        return floorId;
-    }
-
-    public void setFloorId(Integer floorId) {
-        this.floorId = floorId;
-    }
-
     public String getFloorName() {
         return floorName;
-    }
-
-    public void setFloorName(String floorName) {
-        this.floorName = floorName;
     }
 
     public String getMapPath() {
         return mapPath;
     }
-
-    public void setMapPath(String mapPath) {
-        this.mapPath = mapPath;
-    }
-
 }

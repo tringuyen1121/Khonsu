@@ -35,32 +35,16 @@ public class Route {
         return routeId;
     }
 
-    public void setRouteId(Integer routeId) {
-        this.routeId = routeId;
-    }
-
     public Integer getFloorId() {
         return floorId;
-    }
-
-    public void setFloorId(Integer floorId) {
-        this.floorId = floorId;
     }
 
     public Integer getStartLocationId() {
         return startLocationId;
     }
 
-    public void setStartLocationId(Integer startLocationId) {
-        this.startLocationId = startLocationId;
-    }
-
     public Integer getEndLocationId() {
         return endLocationId;
-    }
-
-    public void setEndLocationId(Integer endLocationId) {
-        this.endLocationId = endLocationId;
     }
 
     public List<Path> getPaths() {

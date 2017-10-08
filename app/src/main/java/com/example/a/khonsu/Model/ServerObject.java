@@ -20,23 +20,12 @@ public class ServerObject {
         return location;
     }
 
-    public void setLocation(List<Location> location) {
-        this.location = location;
-    }
 
     public List<Floor> getFloors() {
         return floors;
     }
 
-    public void setFloors(List<Floor> floors) {
-        this.floors = floors;
-    }
-
     public List<Route> getRoutes() {
         return routes;
-    }
-
-    public void setRoutes(List<Route> routes) {
-        this.routes = routes;
     }
 }

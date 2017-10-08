@@ -61,73 +61,36 @@ public class Location implements Serializable {
         return locationId;
     }
 
-    public void setLocationId(Integer locationId) {
-        this.locationId = locationId;
-    }
-
     public String getLoactionName() {
         return loactionName;
-    }
-
-    public void setLoactionName(String loactionName) {
-        this.loactionName = loactionName;
     }
 
     public String getLocationType() {
         return locationType;
     }
 
-    public void setLocationType(String locationType) {
-        this.locationType = locationType;
-    }
-
     public String getStickerUuid() {
         return stickerUuid;
-    }
-
-    public void setStickerUuid(String stickerUuid) {
-        this.stickerUuid = stickerUuid;
     }
 
     public Double getLocationX() {
         return locationX;
     }
 
-    public void setLocationX(Double locationX) {
-        this.locationX = locationX;
-    }
-
     public Double getLocationY() {
         return locationY;
-    }
-
-    public void setLocationY(Double locationY) {
-        this.locationY = locationY;
     }
 
     public Double getCoordinateX() {
         return coordinateX;
     }
 
-    public void setCoordinateX(Double coordinateX) {
-        this.coordinateX = coordinateX;
-    }
-
     public Double getCoordinateY() {
         return coordinateY;
-    }
-
-    public void setCoordinateY(Double coordinateY) {
-        this.coordinateY = coordinateY;
     }
 
     public Integer getFloorId() {
         return floorId;
     }
-
-    public void setFloorId(Integer floorId) {
-        this.floorId = floorId;
-    }
-
 }
 
