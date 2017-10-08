@@ -3,10 +3,8 @@ package com.example.a.khonsu;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.AsyncTask;
 
 import com.example.a.khonsu.model.Floor;
 import com.example.a.khonsu.model.Location;
@@ -223,7 +221,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         List<Path> paths = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * " +
-                " FROM " + Constants.DATABASE.PATH_TABLE_NAME +" WHERE pathId IN " +
+                " FROM " + Constants.DATABASE.PATH_TABLE_NAME +" WHERE _id IN " +
                 " (SELECT pathId FROM " + Constants.DATABASE.RP_TABLE_NAME + " WHERE routeId = " + routeId +")";
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){

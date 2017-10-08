@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.example.a.khonsu.util.ZoomLayout
         android:layout_width="match_parent"
@@ -15,13 +15,15 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/map"/>
+                android:id="@+id/map"
+                android:contentDescription="@string/map_description"/>
 
             <ImageView
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:src="@drawable/ic_navigation"
-                android:id="@+id/imagePin"/>
+                android:id="@+id/imagePin"
+                android:contentDescription="@string/pin_description"/>
         </RelativeLayout>
 
     </com.example.a.khonsu.util.ZoomLayout>
@@ -31,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="45dp"
         android:background="@color/colorPrimary"
-        android:text="Start"
+        android:text="@string/show_button"
         android:id="@+id/start_tracking_button"
         android:textColor="@android:color/white"/>
 </RelativeLayout>

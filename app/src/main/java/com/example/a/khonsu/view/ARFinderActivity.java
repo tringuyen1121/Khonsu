@@ -168,7 +168,7 @@ public class ARFinderActivity extends CraftARActivity implements CraftARSearchRe
 
         private Context context;
 
-        public LoadLocation(Context context) {
+        LoadLocation(Context context) {
             this.context = context;
         }
 

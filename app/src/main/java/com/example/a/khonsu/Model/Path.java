@@ -121,5 +121,7 @@ public class Path implements Serializable{
         this.direction = direction;
     }
 
-
+    public Path.DIRECTION getDir() {
+        return dir;
+    }
 }

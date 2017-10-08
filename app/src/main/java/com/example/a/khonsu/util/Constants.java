@@ -2,11 +2,15 @@ package com.example.a.khonsu.util;
 
 public class Constants {
 
+    public static final class STEP {
+        public static final double AVERAGE_STEP_LENGHT = 0.7874; //in meters
+    }
+
     public static final class DATABASE {
 
         // TABLE LOCATIONS
         public static final String LOCATION_TABLE_NAME = "locations";
-        public static final String LOCATION_ID = "_id";
+        static final String LOCATION_ID = "_id";
         public static final String LOCATION_NAME = "location_name";
         public static final String LOCATION_TYPE = "location_type";
         public static final String LOCATION_STICKER_UUID = "sticker_uuid";
@@ -24,7 +28,7 @@ public class Constants {
 
         // TABLE PATH
         public static final String PATH_TABLE_NAME = "paths";
-        public static final String PATH_ID = "_id";
+        static final String PATH_ID = "_id";
         public static final String PATH_DISTANCE = "distance";
         public static final String PATH_FLOOR_ID = "floor_id";
         public static final String PATH_START_X = "startX";
@@ -35,7 +39,7 @@ public class Constants {
 
         // TABLE ROUTE
         public static final String ROUTE_TABLE_NAME = "routes";
-        public static final String ROUTE_ID = "_id";
+        static final String ROUTE_ID = "_id";
         public static final String ROUTE_FLOOR_ID = "floor_id";
         public static final String ROUTE_START_LOC = "start_locationId";
         public static final String ROUTE_END_LOC = "end_locationId";

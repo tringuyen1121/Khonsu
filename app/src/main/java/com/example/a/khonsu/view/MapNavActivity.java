@@ -1,22 +1,20 @@
 package com.example.a.khonsu.view;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,27 +24,33 @@ import com.example.a.khonsu.R;
 import com.example.a.khonsu.SensorService;
 import com.example.a.khonsu.model.Floor;
 import com.example.a.khonsu.model.Location;
+import com.example.a.khonsu.model.Path;
+import com.example.a.khonsu.model.Route;
 import com.example.a.khonsu.util.ZoomLayout;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MapNavActivity extends AppCompatActivity {
 
-    private ImageView mPin, mMap;
-    private int mapWidth, mapHeight, pinWidth, pinHeight = 0;
-    private double azimuth;
-    public double currentAngle;
-    public double preAngle;
+    protected ImageView mPin, mMap;
+    protected ZoomLayout mapLayout;
+    protected int mapWidth, mapHeight, pinWidth, pinHeight = 0;
 
-    private boolean serviceNotRunning = true;
-    private SensorServiceReceiver mSensorReceiverDirection, mSensorReceiverStep, mSensorReceiverAngle;
-    private DatabaseOpenHelper dbHelper;
 
-    public int stepCounter;
+    protected boolean serviceNotRunning = true;
+    protected SensorServiceReceiver mSensorReceiver;
+    protected DatabaseOpenHelper dbHelper;
 
-    private ZoomLayout mapLayout;
-    private Location startLoc;
-    private Floor startfloor;
+    protected Location startLoc;
+    protected Route currentRoute;
+    protected Path currentPath;
+    protected double[] currentXY = new double[2];
+    protected double[] prevXY = new double[2];
+    protected int currentPathIndex, stepsToTake;
+
+    protected Bitmap bmp;
+    protected Canvas c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +65,12 @@ public class MapNavActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         startLoc = (Location) intent.getSerializableExtra(HomeFragment.START_LOCATION);
+        currentXY[0] = startLoc.getLocationX();
+        currentXY[1] = startLoc.getLocationY();
+        Log.i("Step Detector", Arrays.toString(currentXY));
 
-        startfloor = dbHelper.getFloor(startLoc.getFloorId());
-        if (startfloor == null) {
+        Floor startFloor = dbHelper.getFloor(startLoc.getFloorId());
+        if (startFloor == null) {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle("Error");
             alertDialog.setMessage("Error in fetching floor map. Try to update database again.");
@@ -76,7 +83,7 @@ public class MapNavActivity extends AppCompatActivity {
             alertDialog.show();
             finish();
         } else {
-            int id = getResources().getIdentifier(startfloor.getMapPath(), "drawable", getPackageName());
+            int id = getResources().getIdentifier(startFloor.getMapPath(), "drawable", getPackageName());
             Drawable map = getResources().getDrawable(id, null);
             mMap.setBackground(map);
         }
@@ -87,6 +94,8 @@ public class MapNavActivity extends AppCompatActivity {
                 mMap.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 mapWidth = mMap.getWidth();
                 mapHeight = mMap.getHeight();
+                bmp = Bitmap.createBitmap(mapWidth, mapHeight, Bitmap.Config.ARGB_8888);
+                c = new Canvas(bmp);
                 displayLocation();
             }
         });
@@ -118,14 +127,16 @@ public class MapNavActivity extends AppCompatActivity {
 
     private void displayLocation() {
         if ( mapWidth != 0 && mapHeight != 0 && pinWidth != 0 && pinHeight != 0) {
-            mPin.setX((float)Math.abs(pinWidth/2-(startLoc.getLocationX()*mapWidth)));
-            mPin.setY((float)Math.abs(pinHeight/2-(startLoc.getLocationY()*mapHeight)));
-            mPin.setPivotX((float)(startLoc.getLocationX()*mapWidth));
-            mPin.setPivotY((float)(startLoc.getLocationY()*mapHeight));
-            mPin.requestLayout();
-
-            setUpZoom();
+            setPinOnMap(startLoc.getLocationX(), startLoc.getLocationY());
+            ZoomLayout.setUpZoomAnimation(mapLayout, mPin.getPivotX(), mPin.getPivotY());
         }
+    }
+
+    protected void setPinOnMap(double relativeCoorX, double relativeCoorY) {
+        mPin.setPivotX((float)(relativeCoorX*mapWidth));
+        mPin.setPivotY((float)(relativeCoorY*mapHeight));
+        mPin.setX((float)Math.abs(mPin.getWidth()/2-(relativeCoorX*mapWidth)));
+        mPin.setY((float)Math.abs(mPin.getHeight()/2-(relativeCoorY*mapHeight)));
     }
 
     private void displayPossibleDestination() {
@@ -141,42 +152,40 @@ public class MapNavActivity extends AppCompatActivity {
                 desPin.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        currentRoute = dbHelper.getRoute(startLoc, loc);
+                        List<Path> paths = currentRoute.getPaths();
+                        drawPaths(paths);
 
+                        currentPathIndex = 0;
+                        currentPath = currentRoute.getPaths().get(currentPathIndex);
                     }
                 });
                 la.addView(desPin, params);
-
                 desPin.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         desPin.setX((float) Math.abs(desPin.getWidth() / 2 - (loc.getLocationX() * mapWidth)));
                         desPin.setY((float) Math.abs(desPin.getHeight() - (loc.getLocationY() * mapHeight)));
-                        desPin.requestLayout();
                     }
                 });
             }
         }
     }
 
-    private void setUpZoom() {
-        ScaleAnimation sa = new ScaleAnimation(0, 2.5f, 0, 2.5f, mPin.getPivotX(), mPin.getPivotY());
-        sa.setDuration(1000);
-        sa.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {}
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mapLayout.applyScaleAndTranslation(mPin.getPivotX(),  mPin.getPivotY(), 2.5f);
-                mapLayout.setPivotX(mPin.getPivotX());
-                mapLayout.setPivotY(mPin.getPivotY());
-                mapLayout.setScale(2.5f);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {}
-        });
-        mapLayout.startAnimation(sa);
+    private void drawPaths(List<Path> paths) {
+        mMap.draw(c);
+        Paint paint = new Paint();
+        paint.setColor(ContextCompat.getColor(this, R.color.grey500));
+        paint.setStrokeWidth(10);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        for(Path path : paths){
+            float startX = (float) (path.getStartX() * mapWidth);
+            float endX = (float) (path.getEndX() * mapWidth);
+            float startY = (float) (path.getStartY() * mapHeight);
+            float endY = (float) (path.getEndY() * mapHeight);
+            c.drawLine(startX, startY, endX, endY, paint);
+        }
+        mMap.setImageBitmap(bmp);
     }
 
     private void startService() {
@@ -192,16 +201,11 @@ public class MapNavActivity extends AppCompatActivity {
      * Creates and registers two intent filters - for direction and steps update
      */
     private void regsiterBroadCastReceivers() {
-        IntentFilter directionFilter = new IntentFilter(SensorService.DIRECT_UPDATE);
-        mSensorReceiverDirection = new SensorServiceReceiver();
-        registerReceiver(mSensorReceiverDirection, directionFilter);
+        IntentFilter directionFilter = new IntentFilter(SensorService.ANGLE_UPDATE);
         IntentFilter stepsFilter = new IntentFilter(SensorService.STEP_UPDATE);
-        mSensorReceiverStep = new SensorServiceReceiver();
-        registerReceiver(mSensorReceiverStep, stepsFilter);
-        IntentFilter anglesFilter = new IntentFilter("Azimuth");
-        mSensorReceiverAngle = new SensorServiceReceiver();
-        registerReceiver(mSensorReceiverAngle, anglesFilter);
-
+        mSensorReceiver = new SensorServiceReceiver(this);
+        registerReceiver(mSensorReceiver, stepsFilter);
+        registerReceiver(mSensorReceiver, directionFilter);
     }
 
     @Override
@@ -213,47 +217,14 @@ public class MapNavActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mSensorReceiverDirection != null || mSensorReceiverStep != null) {
+        if (mSensorReceiver != null ) {
             try {
-                unregisterReceiver(mSensorReceiverDirection);
-                unregisterReceiver(mSensorReceiverStep);
-                mSensorReceiverDirection = null;
-                mSensorReceiverStep = null;
+                unregisterReceiver(mSensorReceiver);
+                mSensorReceiver = null;
             } catch (Exception e) {
-                mSensorReceiverDirection = null;
-                mSensorReceiverStep = null;
+                mSensorReceiver  = null;
             }
         }
         serviceNotRunning = true;
-    }
-
-    private class SensorServiceReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(SensorService.STEP_UPDATE)) {
-                stepCounter = intent.getIntExtra(SensorService.STEPS, 0);
-            } else if (intent.getAction().equals(SensorService.DIRECT_UPDATE)) {
-                //ngle = intent.getIntExtra(SensorService.ANGLE, 0);
-            } else if (intent.getAction().equals("Azimuth")) {
-                Log.i("Map", "Receive broadcast");
-                azimuth = intent.getDoubleExtra("Azimuth", 0);
-                currentAngle = azimuth;
-            }
-
-            RotateAnimation ra = new RotateAnimation(
-                    (float) preAngle, (float) currentAngle, mPin.getPivotX(), mPin.getPivotY());
-            ra.setDuration(210);
-            ra.setFillAfter(true);
-            mPin.setAnimation(ra);
-            mPin.startAnimation(ra);
-            //System.out.println(stepCounter + " " + angle);
-            //updateGUI();
-            preAngle = currentAngle;
-        }
-
-        private void updateGUI() {
-
-        }
     }
 }

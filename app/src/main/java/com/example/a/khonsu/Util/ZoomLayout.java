@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.RelativeLayout;
 
 public class ZoomLayout extends RelativeLayout implements ScaleGestureDetector.OnScaleGestureListener {
@@ -160,5 +162,26 @@ public class ZoomLayout extends RelativeLayout implements ScaleGestureDetector.O
 
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    public static void setUpZoomAnimation(final ZoomLayout layout, final float pivotX, final float pivotY) {
+        ScaleAnimation sa = new ScaleAnimation(0, 2.5f, 0, 2.5f, pivotX, pivotY);
+        sa.setDuration(1000);
+        sa.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                layout.applyScaleAndTranslation(pivotX,  pivotY, 2.5f);
+                layout.setPivotX(pivotX);
+                layout.setPivotY(pivotY);
+                layout.setScale(2.5f);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+        layout.startAnimation(sa);
     }
 }

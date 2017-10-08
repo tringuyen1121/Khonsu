@@ -42,7 +42,6 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment  {
 
     private Button cameraBtn;
-    private Button locationBtn;
     private EditText locationEditText;
 
     private ServerAPI mAPI;
@@ -100,7 +99,7 @@ public class HomeFragment extends Fragment  {
             }
         });
 
-        locationBtn = v.findViewById(R.id.location_submit_btn);
+        Button locationBtn = v.findViewById(R.id.location_submit_btn);
         locationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -195,7 +194,7 @@ public class HomeFragment extends Fragment  {
 
         private Context context;
 
-        public LoadLocation(Context context) {
+        LoadLocation(Context context) {
             this.context = context;
         }
 

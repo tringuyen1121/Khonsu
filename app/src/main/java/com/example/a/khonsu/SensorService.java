@@ -8,9 +8,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import java.util.Arrays;
+import com.example.a.khonsu.util.filter.LowPassFilter;
 
 public class SensorService extends Service implements SensorEventListener {
 
@@ -41,7 +40,7 @@ public class SensorService extends Service implements SensorEventListener {
      */
     private static final String TAG = "com.exmaple.a.khonsu.SensorService";
     public static final String STEP_UPDATE = TAG + ".action.STEP_UPDATE";
-    public static final String DIRECT_UPDATE = TAG + ".action.DIRECTION_UPDATE";
+    public static final String ANGLE_UPDATE = TAG + ".action.ANGLE_UPDATE";
     public static final String STEPS = "STEPS";
     public static final String ANGLE = "ANGLE";
 
@@ -50,16 +49,8 @@ public class SensorService extends Service implements SensorEventListener {
      */
     public static boolean sensorAvailable = true;
     private boolean hasRotationSensor = true;
-    private int mStep = 0;
-    private int currentAngle = 0;
-    private double prevAngle = 0;
-    private boolean isWalking = false;
-
-
-
-    public static final String AZIMUTH = "AZIMUTH";
-    public static final String PITCH = "PITCH";
-    public static final String ROLL = "ROLL";
+    private boolean mStep = false;
+    private double currentAzimuth, preAzimuth;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -108,24 +99,19 @@ public class SensorService extends Service implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ROTATION_VECTOR:
-                System.arraycopy(event.values, 0, mRotation, 0, 3);
+                LowPassFilter.lowPass(event.values.clone(), mRotation);
                 calculateOrientation();
                 break;
             case Sensor.TYPE_ACCELEROMETER:
-                System.arraycopy(event.values, 0, mAccel, 0, 3);
+                LowPassFilter.lowPass(event.values.clone(), mAccel);
                 calculateOrientation();
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
-                System.arraycopy(event.values, 0, mMagnet, 0, 3);
+                LowPassFilter.lowPass(event.values.clone(), mMagnet);
                 break;
             case Sensor.TYPE_STEP_DETECTOR:
-                if (event.values[0] == 1.0) {
-                    isWalking = true;
-                    mStep++;
-                    //announceChange(STEP_UPDATE);
-                } else {
-                    isWalking = false;
-                }
+                mStep = event.values[0] == 1.0;
+                announceChange(STEP_UPDATE);
                 break;
         }
     }
@@ -140,41 +126,23 @@ public class SensorService extends Service implements SensorEventListener {
         }
 
         // Calculate azimuth to detect direction
-        double azimuth = Math.toDegrees(mOrientation[0]);
-        //currentAngle = (int)azimuth;
+        currentAzimuth = Math.toDegrees(mOrientation[0]);
 
-        System.out.println(azimuth);
-
-        //TEMPORARY:
-        if(Math.abs(azimuth - prevAngle) >= 1.0) {
-            prevAngle = azimuth;
-            Intent intent = new Intent("Azimuth");
-            intent.putExtra("Azimuth", azimuth);
-            sendBroadcast(intent);
+        if(Math.abs(currentAzimuth - preAzimuth) >= 2.0) {
+            announceChange(ANGLE_UPDATE);
+            preAzimuth = currentAzimuth;
         }
-
-
-
-//        if((prevAngle - currentAngle) > 45){
-//            Log.v("<-", "Turning LEFT");
-//            announceChange(DIRECT_UPDATE);
-//            prevAngle = currentAngle;
-//        } else if ((prevAngle - currentAngle) < -45) {
-//            Log.v("->", "Turning RIGHT");
-//            announceChange(DIRECT_UPDATE);
-//            prevAngle = currentAngle;
-//        }
     }
 
-//    private void announceChange(String type) {
-//        if (type.equals(STEP_UPDATE)) {
-//            Intent intent = new Intent(STEP_UPDATE);
-//            intent.putExtra(STEPS, mStep);
-//            sendBroadcast(intent);
-//        } else {
-//            Intent intent = new Intent(DIRECT_UPDATE);
-//            intent.putExtra(ANGLE, currentAngle);
-//            sendBroadcast(intent);
-//        }
-//    }
+    private void announceChange(String type) {
+        if (type.equals(STEP_UPDATE)) {
+            Intent intent = new Intent(STEP_UPDATE);
+            intent.putExtra(STEPS, mStep);
+            sendBroadcast(intent);
+        } else {
+            Intent intent = new Intent(ANGLE_UPDATE);
+            intent.putExtra(ANGLE, currentAzimuth);
+            sendBroadcast(intent);
+        }
+    }
 }

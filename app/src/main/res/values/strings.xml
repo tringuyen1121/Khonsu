@@ -20,4 +20,10 @@
 
     <!--AR RECOGNITION ACTIVITY -->
     <string name="finder_searching">Scanning…</string>
+
+    <!-- MAP ACTIVITY -->
+    <string name="pin_description">Navigator</string>
+    <string name="map_description">Floor map</string>
+    <string name="show_button">Show</string>
+
 </resources>
