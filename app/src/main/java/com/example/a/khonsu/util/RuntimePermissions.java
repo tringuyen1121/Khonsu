@@ -15,6 +15,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseIntArray;
 import android.view.View;
 
+/**
+ *  Request permissions at run time
+ */
+
 public abstract class RuntimePermissions extends AppCompatActivity {
 
     private SparseIntArray mErrorString;

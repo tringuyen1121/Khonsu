@@ -1,5 +1,9 @@
 package com.example.a.khonsu.util.filter;
 
+/**
+ * Low-pass filter filters out noise from sensors' data, smooths the data.
+ */
+
 public class LowPassFilter {
 
     private static final float ALPHA = 0.20f;

@@ -15,6 +15,10 @@ import com.example.a.khonsu.util.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  Database Helper to write and read data.
+ */
+
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 6;
@@ -45,6 +49,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // Below methods are to insert values into respective table
     public void insertLocation(Location loc) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -112,10 +117,12 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Below methods are to get data from respective tables
     public Location getStartLocation(String identifier) {
         Location loc = null;
 
         SQLiteDatabase db = this.getReadableDatabase();
+        // Query location using Location name or sticker uuid
         Cursor cursor = db.query(Constants.DATABASE.LOCATION_TABLE_NAME,
                 null,
                 Constants.DATABASE.LOCATION_STICKER_UUID + "=? OR " + Constants.DATABASE.LOCATION_NAME + "=?",

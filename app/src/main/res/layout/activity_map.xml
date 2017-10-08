@@ -36,10 +36,13 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="45dp"
-        android:background="@color/colorPrimary"
+        android:layout_height="36dp"
         android:text="@string/show_button"
-        android:id="@+id/start_tracking_button"
-        android:textColor="@android:color/white"/>
+        android:background="@drawable/button_corner"
+        android:layout_margin="30dp"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:id="@+id/start_tracking_button"/>
 </RelativeLayout>

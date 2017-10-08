@@ -20,6 +20,7 @@ public class MainActivity extends RuntimePermissions implements LaunchingFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // set up Listener to replace launchingFragment with HomeFragment after finishing fetching data.
         LaunchingFragment launchingFragment = new LaunchingFragment();
 
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, launchingFragment).commit();
@@ -38,6 +39,11 @@ public class MainActivity extends RuntimePermissions implements LaunchingFragmen
         }
     }
 
+    /*
+    After finish fetching data, ask users to grant permission of using Location Service. This application relies "heavily"
+    on Location to perform its functions. "Although there is not current Location Service use at the moment, but still, for extension :)".
+    After permission is granted, replace HomeFragment
+     */
     @Override
     public void onFinishFetchData() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -50,6 +56,7 @@ public class MainActivity extends RuntimePermissions implements LaunchingFragmen
         }
     }
 
+    // When user click cameraBtn on HomeFragment, check permission is call on this Activity.
     public void requestCameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {

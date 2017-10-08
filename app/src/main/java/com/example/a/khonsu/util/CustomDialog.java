@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.example.a.khonsu.R;
 
+/**
+ * To build custom dialogs
+ */
 
 public class CustomDialog extends Dialog {
 

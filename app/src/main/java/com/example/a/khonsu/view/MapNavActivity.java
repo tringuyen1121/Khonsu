@@ -1,6 +1,5 @@
 package com.example.a.khonsu.view;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -21,7 +20,6 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.a.khonsu.DatabaseOpenHelper;
@@ -37,12 +35,18 @@ import com.example.a.khonsu.util.ZoomLayout;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ *  Main feature of the app.
+ */
+
 public class MapNavActivity extends AppCompatActivity {
 
+    //All variables here are declared protected, to be used in SensorServiceReceiver
+
+    //  VIEW REFERENCES
     protected ImageView mPin, mMap;
     protected ZoomLayout mapLayout;
     protected int mapWidth, mapHeight, pinWidth, pinHeight = 0;
-
 
     protected boolean serviceNotRunning = true;
     protected SensorServiceReceiver mSensorReceiver;
@@ -51,8 +55,8 @@ public class MapNavActivity extends AppCompatActivity {
     protected Location startLoc;
     protected Route currentRoute;
     protected Path currentPath;
-    protected double[] currentXY = new double[2];
-    protected double[] prevXY = new double[2];
+    protected double[] currentXY = new double[2]; // current XY coordination on screen
+    protected double[] prevXY = new double[2]; // previous XY coordination on screen
     protected int currentPathIndex, stepsToTake;
 
     protected Bitmap bmp;
@@ -69,12 +73,13 @@ public class MapNavActivity extends AppCompatActivity {
         mPin = (ImageView)findViewById(R.id.imagePin);
         mapLayout = (ZoomLayout) findViewById(R.id.map_layout);
 
+        // Get current users' Location, which is sent from LoadLocation task in HomeFragment
         Intent intent = getIntent();
         startLoc = (Location) intent.getSerializableExtra(HomeFragment.START_LOCATION);
         currentXY[0] = startLoc.getLocationX();
         currentXY[1] = startLoc.getLocationY();
-        Log.i("Step Detector", Arrays.toString(currentXY));
 
+        // Get floor base on floorId of current Location. From this floor, display the floor maps in assets and set the title.
         Floor startFloor = dbHelper.getFloor(startLoc.getFloorId());
         if (startFloor == null) {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
@@ -98,6 +103,11 @@ public class MapNavActivity extends AppCompatActivity {
             }
         }
 
+        /*
+         Wait until the Map and Pin has fully draw to get the Width and Height of both. From these values, draw a canvas base on map size, for
+         drawing path later. Also, set the coordinates of pin to the current location on map, calculate by the relative coordinate in database,
+         map's width and height, pin's width and height.
+          */
         mMap.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -135,9 +145,11 @@ public class MapNavActivity extends AppCompatActivity {
             System.exit(1);
         }
 
+        // show instruction at the start of the Activity
         showInstructDialog();
     }
 
+    // Set the coordinates of the Pin on map and zoom to it automatically.
     private void displayLocation() {
         if ( mapWidth != 0 && mapHeight != 0 && pinWidth != 0 && pinHeight != 0) {
             setPinOnMap(startLoc.getLocationX(), startLoc.getLocationY());
@@ -145,6 +157,12 @@ public class MapNavActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     The Pin is set based on its size and also the maps'. We need to calculate the X and Y to set the center
+     of the pin right to the current location. This is done by the formula: Xcenter = X + imageView.width/2, similar
+     to Y coordinate. Also set the pivot X and Y of pin for rotate Animation. If pivots is not set, the pin will rotate
+     around old pivots when move to new X and Y.
+      */
     protected void setPinOnMap(double relativeCoorX, double relativeCoorY) {
         mPin.setPivotX((float)(relativeCoorX*mapWidth));
         mPin.setPivotY((float)(relativeCoorY*mapHeight));
@@ -152,6 +170,11 @@ public class MapNavActivity extends AppCompatActivity {
         mPin.setY((float)Math.abs(mPin.getHeight()/2-(relativeCoorY*mapHeight)));
     }
 
+    /*
+     Basically get all other Locations in database than the current Location and display them on map. Inside a building, from one location
+     there should be at least one possible route to get to another locations. After getting the destinations, display new pins at their coordinates.
+     Position of the pins is calculate the same way as current location's pin.
+      */
     private void displayPossibleDestination() {
         List<Location> destinations = dbHelper.getAllLocation();
         RelativeLayout la = (RelativeLayout)findViewById(R.id.map_layout_child);
@@ -162,6 +185,7 @@ public class MapNavActivity extends AppCompatActivity {
                 desPin.setImageResource(R.drawable.ic_app_icon);
                 desPin.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 desPin.setAdjustViewBounds(true);
+                // when user choose a destination, display a path how to get to it
                 desPin.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -185,6 +209,10 @@ public class MapNavActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     Paths is drawn by calculating each start and end points of each path in the route.
+     These points then transform onto screen coordinates.
+      */
     private void drawPaths(List<Path> paths) {
         mMap.draw(c);
         Paint paint = new Paint();
@@ -201,6 +229,7 @@ public class MapNavActivity extends AppCompatActivity {
         mMap.setImageBitmap(bmp);
     }
 
+    // Start the sensorService, this is unbind service
     private void startService() {
         if (serviceNotRunning) {
             startService(new Intent(this, SensorService.class));
@@ -210,8 +239,8 @@ public class MapNavActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Creates and registers two intent filters - for direction and steps update
+    /*
+     Creates and registers two intent filters - for direction and steps update
      */
     private void regsiterBroadCastReceivers() {
         IntentFilter directionFilter = new IntentFilter(SensorService.ANGLE_UPDATE);
@@ -253,7 +282,6 @@ public class MapNavActivity extends AppCompatActivity {
     }
 
     private void showInstructDialog() {
-        // custom dialog
         CustomDialog dialog = new CustomDialog(this, getString(R.string.dialog_title), getString(R.string.map_dialog_message));
         dialog.show();
     }

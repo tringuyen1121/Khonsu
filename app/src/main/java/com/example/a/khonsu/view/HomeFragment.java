@@ -1,5 +1,6 @@
 package com.example.a.khonsu.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -41,11 +44,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ *  Fetching data from server starts here, using DatabaseOpenHelper and Retrofit2
+ */
+
 public class HomeFragment extends Fragment  {
 
+    // VIEW REFERENCES
     private Button cameraBtn;
     private EditText locationEditText;
 
+    // HELPER OBJECTS
     private ServerAPI mAPI;
     private DatabaseOpenHelper dbHelper;
     private SharedPreferences sharedPref;
@@ -60,6 +69,7 @@ public class HomeFragment extends Fragment  {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //set up databaseOpenHelper and Retrofit objects.
         mAPI = ApiUtils.getServerAPI();
         dbHelper = new DatabaseOpenHelper(getContext());
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -83,6 +93,7 @@ public class HomeFragment extends Fragment  {
 
         setHasOptionsMenu(true);
 
+        // request permission from users, if granted then direct to ARFinderActivity.
         cameraBtn = v.findViewById(R.id.camera_button);
         setUpCameraBtn();
         cameraBtn.setOnClickListener(new View.OnClickListener() {
@@ -93,11 +104,18 @@ public class HomeFragment extends Fragment  {
             }
         });
 
+        // if no sticker is provided, this editText is to input location manually
         locationEditText = v.findViewById(R.id.location_editText);
-        locationEditText.setOnKeyListener(new View.OnKeyListener() {
+        locationEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                return false;
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    locationEditText.setHint(getString(R.string.enter_location_hint));
+                } else {
+                    locationEditText.setHint("");
+                    InputMethodManager inputMethodManager =(InputMethodManager)getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
             }
         });
 
@@ -108,7 +126,7 @@ public class HomeFragment extends Fragment  {
                 if (locationEditText.getText() != null) {
                     String searchTerm = locationEditText.getText().toString().trim().toLowerCase();
                     LoadLocation task = new LoadLocation(getContext());
-                    task.execute(searchTerm);
+                    task.execute(searchTerm); //find location in another Thread
                 }
             }
         });
@@ -145,6 +163,9 @@ public class HomeFragment extends Fragment  {
         cameraBtn.requestLayout();
     }
 
+    /*
+    Data is saved on metropolia server in JSON. This method performs GET call from Retrofit object to fetch data
+     */
     public void getDataFromJSON() {
 
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -159,6 +180,7 @@ public class HomeFragment extends Fragment  {
                     routeList = response.body().getRoutes();
                     floorList = response.body().getFloors();
 
+                    // After fetching successfully, write data into SQLite database
                     SaveIntoDatabase task = new SaveIntoDatabase();
                     task.start();
 
@@ -175,6 +197,11 @@ public class HomeFragment extends Fragment  {
         });
     }
 
+    /*
+     Write data into SQLite db run on another thread. JSON file contents 4 types of objects: Location, Floor, Route and Path. Each type of objects
+     link to others using foreign keys, except each object of Route contains and array of Paths.
+      */
+
     public class SaveIntoDatabase extends Thread {
 
         @Override
@@ -183,6 +210,7 @@ public class HomeFragment extends Fragment  {
             for (Location loc: locList) dbHelper.insertLocation(loc);
             for (Floor floor: floorList) dbHelper.insertFloor(floor);
             for (Route route: routeList) {
+                // Loop through the list of Paths in a Route and write them to their own table
                 List<Path> pathList = route.getPaths();
 
                 dbHelper.insertRoute(route);
@@ -193,12 +221,14 @@ public class HomeFragment extends Fragment  {
                 }
             }
             Log.i("Home", "Save Complete");
+            // set SharedPreferences value to indicate db has been already updated, skip it next time.
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(getString(R.string.updated_database), true);
             editor.apply();
         }
     }
 
+    // This method search for matching location in database based on location names or sticker uuid.
     private class LoadLocation extends AsyncTask<String, Void, Location> {
 
         private Context context;
@@ -209,6 +239,7 @@ public class HomeFragment extends Fragment  {
 
         @Override
         protected Location doInBackground(String... strings) {
+            // the name or sticker uuid of location are passed in this params
             return dbHelper.getStartLocation(strings[0]);
         }
 

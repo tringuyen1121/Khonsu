@@ -9,6 +9,7 @@
     <string name="home">Home</string>
     <string name="information_icon">Info</string>
     <string name="enter_location_hint">Enter your current location, i.e room number</string>
+    <string name="enter_location_label">Location</string>
     <string name="location_submit_btn">Enter</string>
     <string name="guide_text">Scan a sticker or enter your location to start</string>
     <string name="camera_btn_description">Button to trigger Camera</string>
@@ -33,6 +34,6 @@
         <string name="home_dialog_message">
         Scan or enter your current location. If you enter your location manually, make sure you are at the entrance, i.e the door.
     </string>
-    <string name="dialog_button">OK</string>
+    <string name="dialog_button">GOT IT</string>
     <string name="dialog_title">How to use?</string>
 </resources>

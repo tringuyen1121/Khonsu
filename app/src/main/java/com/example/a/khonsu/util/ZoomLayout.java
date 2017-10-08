@@ -10,6 +10,11 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.RelativeLayout;
 
+/**
+ *  Custom Layout for zooming function. Inside ZoomLayout, create a Container (for example Relative Layout) to hold Views.
+ *  Only the child at index 0 of this layout can be zoomed.
+ */
+
 public class ZoomLayout extends RelativeLayout implements ScaleGestureDetector.OnScaleGestureListener {
 
     private enum Mode {
@@ -90,6 +95,7 @@ public class ZoomLayout extends RelativeLayout implements ScaleGestureDetector.O
                 }
                 scaleDetector.onTouchEvent(motionEvent);
 
+                // if mode is ZOOM, calculate the zooming scale base on the delta X and Y of fingers' movement and apply to the view.
                 if (mode == Mode.ZOOM) {
                     getParent().requestDisallowInterceptTouchEvent(true);
                     float maxDx = (child().getWidth() - (child().getWidth() / scale)) / 2 * scale;
@@ -100,6 +106,7 @@ public class ZoomLayout extends RelativeLayout implements ScaleGestureDetector.O
                             + ", max " + maxDx);
                     applyScaleAndTranslation(mPivotX, mPivotY, scale);
                 }else if (mode == Mode.DRAG && scale > MIN_ZOOM) {
+                    // if mode is DRAG, translate the View
                     Log.i(TAG, "Draggin");
                     child().setTranslationX(dx);
                     child().setTranslationY(dy);
@@ -164,6 +171,9 @@ public class ZoomLayout extends RelativeLayout implements ScaleGestureDetector.O
         this.scale = scale;
     }
 
+    // Method to automatically zoom in the layout, using Scale Animation. After zooming in, set the pivot X and Y according
+    // to current pivot points and also apply the scaleAndTranslation of  Zoom Layout itself, because the layout will reset after
+    // the animation ends. If we setFillAfter(true) of the animation, the layout won't be able to zoom out.
     public static void setUpZoomAnimation(final ZoomLayout layout, final float pivotX, final float pivotY) {
         ScaleAnimation sa = new ScaleAnimation(0, 2.5f, 0, 2.5f, pivotX, pivotY);
         sa.setDuration(1000);

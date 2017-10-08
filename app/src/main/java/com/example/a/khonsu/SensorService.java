@@ -35,18 +35,12 @@ public class SensorService extends Service implements SensorEventListener {
     // Orientation angles from accelerometer and magnetometer
     private float[] mOrientation = new float[3];
 
-    /*
-    CONSTANTS
-     */
     private static final String TAG = "com.exmaple.a.khonsu.SensorService";
     public static final String STEP_UPDATE = TAG + ".action.STEP_UPDATE";
     public static final String ANGLE_UPDATE = TAG + ".action.ANGLE_UPDATE";
     public static final String STEPS = "STEPS";
     public static final String ANGLE = "ANGLE";
 
-    /*
-    OTHER VARIABLES
-     */
     public static boolean sensorAvailable = true;
     private boolean hasRotationSensor = true;
     private boolean mStep = false;
@@ -128,12 +122,17 @@ public class SensorService extends Service implements SensorEventListener {
         // Calculate azimuth to detect direction
         currentAzimuth = Math.toDegrees(mOrientation[0]);
 
+        // Only notify other receivers if there is a change in orientation greater than 2.0 degrees
         if(Math.abs(currentAzimuth - preAzimuth) >= 2.0) {
             announceChange(ANGLE_UPDATE);
             preAzimuth = currentAzimuth;
         }
     }
 
+    /*
+     Send broadcast data to any receiver, depends on which type of Sensor,
+     different types of broadcast are sent
+      */
     private void announceChange(String type) {
         if (type.equals(STEP_UPDATE)) {
             Intent intent = new Intent(STEP_UPDATE);

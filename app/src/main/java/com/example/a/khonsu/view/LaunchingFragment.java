@@ -26,7 +26,9 @@ import com.example.a.khonsu.R;
 
 import java.util.List;
 
-
+/**
+ *  Preparation of sticker data and AR feature happens in this fragment. After preparation is done, replace it by HomeFragment
+ */
 public class LaunchingFragment extends Fragment implements SetOnDeviceCollectionListener,
         CraftAROnDeviceCollectionManager.AddCollectionListener, CraftAROnDeviceCollectionManager.SyncCollectionListener {
 
@@ -44,7 +46,6 @@ public class LaunchingFragment extends Fragment implements SetOnDeviceCollection
     CraftAROnDeviceCollectionManager mCollectionManager;
 
     /**
-     *
      * Methods of creating data for AR Service
      */
     @Override
@@ -171,7 +172,6 @@ public class LaunchingFragment extends Fragment implements SetOnDeviceCollection
 
         logo = v.findViewById(R.id.logo);
         initAnimation();
-        //scale up logo to 50% of screen width
         scaleLogo();
 
         return v;
@@ -184,6 +184,7 @@ public class LaunchingFragment extends Fragment implements SetOnDeviceCollection
 
     public LaunchingFragment() {}
 
+    //scale up logo to 50% of screen width
     private void scaleLogo() {
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -192,6 +193,7 @@ public class LaunchingFragment extends Fragment implements SetOnDeviceCollection
         logo.requestLayout();
     }
 
+    // Make the logo disappear after fetching is done
     private void initAnimation() {
         zoomIn = AnimationUtils.loadAnimation(getActivity(), R.anim.zoom_in);
         zoomOut = AnimationUtils.loadAnimation(getActivity(), R.anim.zoom_out);
@@ -215,6 +217,7 @@ public class LaunchingFragment extends Fragment implements SetOnDeviceCollection
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                // After animation end, call onFinishFetchData(), which in MainActivity, it replaces this fragment by HomeFragment
                 logo.setVisibility(View.GONE);
                 mListener.onFinishFetchData();
             }
@@ -224,6 +227,7 @@ public class LaunchingFragment extends Fragment implements SetOnDeviceCollection
         });
     }
 
+    // Listener to perform other methods after finishing fetching data.
     public interface LaunchingListener {
         void onFinishFetchData();
     }

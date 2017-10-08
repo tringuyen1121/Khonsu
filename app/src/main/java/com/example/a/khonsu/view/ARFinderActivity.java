@@ -22,6 +22,11 @@ import com.example.a.khonsu.model.Location;
 
 import java.util.ArrayList;
 
+/**
+ *  Activity responsible for AR function. When enter activity, it automatically scan for pre-made stickers. Info of stickers is stored in
+ *  database. The location of users will be fetch based on which stickers are scanned, and direct to Map Activity, else return to Home.
+ */
+
 public class ARFinderActivity extends CraftARActivity implements CraftARSearchResponseHandler {
 
     private final static String TAG = "ARFinderActivity";

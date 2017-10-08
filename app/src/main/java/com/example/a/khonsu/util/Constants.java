@@ -1,9 +1,13 @@
 package com.example.a.khonsu.util;
 
+/**
+ * Constants to use through out the program. So far, mostly the names and fields of database
+ */
+
 public class Constants {
 
     public static final class STEP {
-        public static final double AVERAGE_STEP_LENGHT = 0.7874; //in meters
+        public static final double AVERAGE_STEP_LENGTH = 0.7874; //in meters
     }
 
     public static final class DATABASE {
