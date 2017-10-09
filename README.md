@@ -1,3 +1,4 @@
+![Logo](https://i.imgur.com/R9h4PbC.png)
 # Khonsu: Indoor Navigation Application
 Khonsu is a android application helps tracking indoor of buildings, where GPS and other location services are not working. Using sensor technology, this app can navigate users through the building and update their current location on map.
 
