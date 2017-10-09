@@ -10,7 +10,7 @@ Khonsu is a android application helps tracking indoor of buildings, where GPS an
 
 ## Installation
 ### 1. Clone or download this repo.
-`git clone https://github.com/jamiamikko/FallWatch.git`
+`git clone https://github.com/tringuyen1121/Khonsu.git`
 ### 2. Import project into Android Studio
 Import project into Android Studio and install all requirements
 ### 3. Deploy the application
