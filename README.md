@@ -31,11 +31,10 @@ Instead of using sensors, you can use geographical coordinates and GPS service t
 
 
 ## Test
-This app was tested on LG Nexus 5X, Android 8.0 and Samsung galaxy S4 Android 5.0. The tests were performed at Metropolia UAS Campus. 
-
-## Liscense
-This project is licensed under the MIT License - see [License](https://github.com/tringuyen1121/Khonsu/blob/master/LICENSE) 
+This app was tested successfully on LG Nexus 5X, Android 8.0 and Samsung galaxy S4 Android 5.0. The tests were performed at Metropolia UAS Campus. 
 
 ## Bugs and Feedback
 For bugs, questions and discussions please use the [GitHub Issues](https://github.com/tringuyen1121/Khonsu/issues).
 
+## Liscense
+This project is licensed under the MIT License - see [License](https://github.com/tringuyen1121/Khonsu/blob/master/LICENSE) 
