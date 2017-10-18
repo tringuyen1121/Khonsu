@@ -29,6 +29,8 @@ Instead of using sensors, you can use geographical coordinates and GPS service t
 | ------------------------------------------- |-------------------------------------------|---------------------------------------|
 |![Launcher](https://i.imgur.com/9DDB8q7.png) |  ![Home](https://i.imgur.com/p3gGMDI.png) | ![Map](https://i.imgur.com/oZnDlFV.png)|
 
+## Documentation
+UI documentation and test report can be found [here](https://drive.google.com/drive/folders/0B17BJ-i7LY61M2NtSXZaNmY1Ync?usp=sharing)
 
 ## Test
 This app was tested successfully on LG Nexus 5X, Android 8.0 and Samsung galaxy S4 Android 5.0. The tests were performed at Metropolia UAS Campus. 
